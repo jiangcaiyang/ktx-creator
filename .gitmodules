@@ -11,3 +11,11 @@
 	path = module/magick
 	url = https://github.com/MarcoMartins86/ImageMagick.git
 	branch = CMake-support
+[submodule "module/zlib"]
+	path = module/zlib
+	url = https://github.com/madler/zlib.git
+	branch = master
+[submodule "module/libpng"]
+	path = module/libpng
+	url = https://github.com/glennrp/libpng.git
+	branch = libpng16

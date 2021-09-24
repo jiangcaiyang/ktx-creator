@@ -2,7 +2,8 @@ cmake_minimum_required(VERSION 3.7)
 
 set(KTX_CREATOR_NAME ktx-creator)
 project(${KTX_CREATOR_NAME} C CXX)
-
+set_property(GLOBAL PROPERTY USE_FOLDERS ON)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_CXX_STANDARD 14)
 
@@ -93,7 +94,30 @@ target_compile_definitions(ktx PRIVATE "-DKTX_OPENGL=1")
 
 # Magick++
 set(MAGICK_DIR ${MODULE_DIR}/magick)
+
+set(PNG_BUILD_ZLIB ON CACHE BOOL "" FORCE)
+set(PNG_SHARED OFF CACHE BOOL "" FORCE)
+set(PNG_EXECUTABLES OFF CACHE BOOL "" FORCE)
+set(PNG_TESTS OFF CACHE BOOL "" FORCE)
+add_subdirectory(${MODULE_DIR}/zlib)
+add_subdirectory(${MODULE_DIR}/libpng)
+target_include_directories(png_static 
+	PUBLIC 
+		$<BUILD_INTERFACE:${MODULE_DIR}/zlib>
+		$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/module/zlib>)
+set(PNG_PNG_INCLUDE_DIR ${CMAKE_CURRENT_BINARY_DIR}/module/libpng)
+set(PNG_LIBRARY ${CMAKE_CURRENT_BINARY_DIR}/module/libpng/$<CONFIG>/libpng16_static$<$<CONFIG:Debug>:d>.lib)
 add_subdirectory(${MAGICK_DIR})
+target_include_directories(MagickCore-7.Q16
+	PUBLIC 
+		$<BUILD_INTERFACE:${MODULE_DIR}/libpng>
+		$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/module/libpng>
+		$<BUILD_INTERFACE:${MODULE_DIR}/zlib>
+		$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/module/zlib>)
+target_link_libraries(MagickCore-7.Q16
+	PUBLIC 
+		${CMAKE_CURRENT_BINARY_DIR}/module/libpng/$<CONFIG>/libpng16_static$<$<CONFIG:Debug>:d>.lib
+		${CMAKE_CURRENT_BINARY_DIR}/module/zlib/$<CONFIG>/zlibstatic$<$<CONFIG:Debug>:d>.lib)
 
 # ktx-creator lib
 set(SOURCES
