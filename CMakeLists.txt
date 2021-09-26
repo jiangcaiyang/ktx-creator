@@ -94,7 +94,7 @@ target_compile_definitions(ktx PRIVATE "-DKTX_OPENGL=1")
 
 # Magick++
 set(MAGICK_DIR ${MODULE_DIR}/magick)
-
+cmake_policy(SET CMP0079 NEW)
 set(PNG_BUILD_ZLIB ON CACHE BOOL "" FORCE)
 set(PNG_SHARED OFF CACHE BOOL "" FORCE)
 set(PNG_EXECUTABLES OFF CACHE BOOL "" FORCE)
